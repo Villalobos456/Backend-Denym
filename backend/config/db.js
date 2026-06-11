@@ -2,6 +2,9 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+// Parse MYSQL_URL when available (Railway production), otherwise fall back
+// to individual env vars (local development).
+// Expected format: mysql://user:password@host:port/database
 function getDbConfig() {
   const url = process.env.MYSQL_URL;
   if (url) {
