@@ -1,44 +1,80 @@
 // backend/scripts/init-db.js
-//
-// Initialises the production MySQL database from database/denymstyle.sql.
-// Run once on a fresh Railway MySQL service via Pre-deploy command.
-//
-// Safe to re-run: uses IF NOT EXISTS and INSERT IGNORE.
-
+require('dotenv').config();
 const fs    = require('fs');
 const path  = require('path');
 const mysql = require('mysql2/promise');
 
+// ── Construir config desde variables individuales (más confiable que MYSQL_URL)
+function getDbConfig() {
+  // Preferir variables individuales de Railway (MYSQLHOST, etc.)
+  if (process.env.MYSQLHOST) {
+    return {
+      host:               process.env.MYSQLHOST,
+      port:               Number(process.env.MYSQLPORT) || 3306,
+      user:               process.env.MYSQLUSER,
+      password:           process.env.MYSQLPASSWORD,
+      database:           process.env.MYSQLDATABASE || 'railway',
+      multipleStatements: true,
+    };
+  }
+  // Fallback: MYSQL_URL (si Railway la resolvió bien)
+  if (process.env.MYSQL_URL) {
+    return process.env.MYSQL_URL + '?multipleStatements=true';
+  }
+  console.error('❌  No hay variables de MySQL configuradas (MYSQLHOST o MYSQL_URL)');
+  process.exit(1);
+}
+
+// ── Esperar a que MySQL esté listo (máx ~60 seg)
+async function waitForMySQL(config, retries = 20, delayMs = 3000) {
+  for (let i = 1; i <= retries; i++) {
+    try {
+      const conn = await mysql.createConnection(config);
+      await conn.end();
+      console.log(`✅  MySQL listo (intento ${i})`);
+      return;
+    } catch (err) {
+      console.log(`⏳  MySQL no disponible (${i}/${retries}): ${err.message}`);
+      if (i === retries) {
+        console.error('❌  MySQL no respondió después de', retries, 'intentos');
+        process.exit(1);
+      }
+      await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+}
+
 async function initDatabase() {
-  const dbUrl = process.env.MYSQL_URL;
-  if (!dbUrl) {
-    console.error('❌  MYSQL_URL no configurada');
-    process.exit(1);
+  const config = getDbConfig();
+
+  // Mostrar a qué host conectamos (sin password)
+  if (typeof config === 'object') {
+    console.log(`🔌  Conectando a ${config.database} @ ${config.host}:${config.port} …`);
   }
 
-  let parsedUrl;
-  try {
-    parsedUrl = new URL(dbUrl);
-  } catch (e) {
-    console.error('❌  MYSQL_URL inválida:', e.message);
-    process.exit(1);
-  }
-
-  const dbName = parsedUrl.pathname.replace(/^\//, '') || 'railway';
-  console.log(`🔌  Conectando a ${dbName} @ ${parsedUrl.hostname} …`);
+  // Esperar a MySQL con reintentos
+  await waitForMySQL(config);
 
   let connection;
   try {
-    connection = await mysql.createConnection(dbUrl + '?multipleStatements=true');
+    connection = await mysql.createConnection(config);
     console.log('✅  Conectado a MySQL');
   } catch (err) {
-    console.error('❌  No se pudo conectar a MySQL:', err.message);
+    console.error('❌  No se pudo conectar:', err.message);
     process.exit(1);
   }
 
-  const sqlPath = path.join(__dirname, '../../database/denymstyle.sql');
-  if (!fs.existsSync(sqlPath)) {
-    console.error('❌  Archivo SQL no encontrado:', sqlPath);
+  // Ruta del SQL — buscar en posibles ubicaciones
+  const sqlCandidates = [
+    path.join(__dirname, '../../database/denymstyle.sql'),
+    path.join(__dirname, '../database/denymstyle.sql'),
+    path.join(process.cwd(), 'database/denymstyle.sql'),
+  ];
+  const sqlPath = sqlCandidates.find(p => fs.existsSync(p));
+
+  if (!sqlPath) {
+    console.error('❌  Archivo SQL no encontrado. Rutas buscadas:');
+    sqlCandidates.forEach(p => console.error('   ', p));
     await connection.end();
     process.exit(1);
   }
@@ -48,37 +84,31 @@ async function initDatabase() {
     sqlScript = fs.readFileSync(sqlPath, 'utf8');
     console.log(`📄  SQL leído: ${sqlPath} (${(sqlScript.length / 1024).toFixed(1)} KB)`);
   } catch (err) {
-    console.error('❌  Error leyendo el archivo SQL:', err.message);
+    console.error('❌  Error leyendo SQL:', err.message);
     await connection.end();
     process.exit(1);
   }
 
-  // Limpiar sintaxis incompatible con MySQL de Railway
-  let cleanSql = sqlScript
-    // Hacer INSERT idempotente
+  // Limpiar sintaxis incompatible con Railway MySQL
+  const cleanSql = sqlScript
     .replace(/\bINSERT INTO\b/g, 'INSERT IGNORE INTO')
-    // Eliminar DEFINER que Railway no permite
     .replace(/DEFINER=`[^`]*`@`[^`]*`\s*/g, '')
-    // Eliminar CREATE TABLE stand-in para vistas
     .replace(/CREATE TABLE `v_[^`]+`[\s\S]*?;/g, '')
-    // Reemplazar CREATE ALGORITHM con CREATE OR REPLACE VIEW
     .replace(/CREATE ALGORITHM=\w+\s+SQL SECURITY \w+\s+VIEW/g, 'CREATE OR REPLACE VIEW');
 
   try {
     console.log('⚙️   Ejecutando script SQL …');
     await connection.query(cleanSql);
     console.log('✅  Base de datos inicializada correctamente');
-    console.log('    Tablas, vistas, seed data y usuario admin listos.');
   } catch (err) {
-    console.error('❌  Error ejecutando el script SQL:', err.message);
-    if (err.sql) {
-      console.error('    Statement:', err.sql.substring(0, 300));
-    }
+    console.error('❌  Error ejecutando SQL:', err.message);
+    if (err.sql) console.error('    Statement:', err.sql.substring(0, 300));
     await connection.end();
     process.exit(1);
   }
 
   await connection.end();
+  console.log('🚀  Init-db completado');
   process.exit(0);
 }
 
