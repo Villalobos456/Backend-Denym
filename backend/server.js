@@ -86,3 +86,21 @@ app.use((err, _req, res, _next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`\n🚀  DenymStyle API — Puerto ${PORT}\n`));
+
+// ── SETUP TEMPORAL (borrar después)
+app.get('/api/run-setup', async (_, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const sql = fs.readFileSync(path.join(__dirname, '../database/denymstyle.sql'), 'utf8');
+    let cleanSql = sql
+      .replace(/\bINSERT INTO\b/g, 'INSERT IGNORE INTO')
+      .replace(/DEFINER=`[^`]*`@`[^`]*`\s*/g, '')
+      .replace(/CREATE TABLE `v_[^`]+`[\s\S]*?;/g, '')
+      .replace(/CREATE ALGORITHM=\w+\s+SQL SECURITY \w+\s+VIEW/g, 'CREATE OR REPLACE VIEW');
+    await pool.query(cleanSql);
+    res.json({ status: 'OK', message: 'Base de datos inicializada!' });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
