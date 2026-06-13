@@ -1,16 +1,8 @@
--- ═══════════════════════════════════════════════════════════════
---  DENYMSTYLE — Base de Datos Completa | XAMPP MySQL
---  Autor: Marcelo Villalobos | mjkazama01@gmail.com
---  Versión 2.0 — Normalizada 3FN
--- ═══════════════════════════════════════════════════════════════
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "-04:00";
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE IF NOT EXISTS `denymstyle`
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-USE `denymstyle`;
+USE `railway`;
 
 -- ──────────────────────────────────────────
 -- TABLA: roles
