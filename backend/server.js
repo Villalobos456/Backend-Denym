@@ -1,4 +1,3 @@
-// server.js — DenymStyle API v2.0
 require('dotenv').config();
 require('express-async-errors'); // ← maneja errores async sin try/catch manual
 
