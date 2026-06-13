@@ -9,6 +9,9 @@ const pool      = require('./config/db');
 
 const app = express();
 
+// ── Trust proxy (requerido en Railway/producción)
+app.set('trust proxy', 1);
+
 // ── Middlewares
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
@@ -61,7 +64,7 @@ app.post('/api/chat', async (req, res) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 800,
         system: 'Eres Demy, asistente de moda de DenymStyle Bolivia. Fundada por Marcelo Villalobos. Elegante, sofisticada. Responde siempre en español, maximo 120 palabras. Colecciones SS26: Noir Urbain, Creme de la Creme. AW25: Dorado Salvaje, Minimalista Feroz. Precios Bs.190-420. WhatsApp: 69800542.',
         messages
