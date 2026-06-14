@@ -1,6 +1,5 @@
 require('dotenv').config();
 require('express-async-errors'); // ← maneja errores async sin try/catch manual
-
 const express   = require('express');
 const cors      = require('cors');
 const helmet    = require('helmet');
