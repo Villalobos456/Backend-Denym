@@ -6,7 +6,7 @@
 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 denymstyle/
@@ -48,7 +48,7 @@ denymstyle/
 
 ---
 
-## 🗄️ Instalación de la Base de Datos (XAMPP)
+##  Instalación de la Base de Datos (XAMPP)
 
 1. Abre **phpMyAdmin** en `http://localhost/phpmyadmin`
 2. Ve a **Importar** → selecciona `database/denymstyle.sql`
@@ -70,7 +70,7 @@ mysql -u root -p < database/denymstyle.sql
 
 ---
 
-## ⚙️ Backend — Instalación
+##  Backend — Instalación
 
 ```bash
 cd backend
@@ -94,7 +94,7 @@ FRONTEND_URL=http://localhost:3000
 
 ---
 
-## ⚛️ Frontend — Instalación
+##  Frontend — Instalación
 
 ```bash
 cd frontend
@@ -105,7 +105,7 @@ npm run build
 
 ---
 
-## 🐳 Docker
+##  Docker
 
 ```bash
 cd docker
@@ -116,7 +116,7 @@ docker-compose logs -f api
 
 ---
 
-## ☸️ Kubernetes
+##  Kubernetes
 
 ```bash
 kubectl apply -f docker/kubernetes.yml
@@ -127,9 +127,9 @@ kubectl scale deployment ds-api --replicas=3 -n denymstyle
 
 ---
 
-## 📋 Funcionalidades Implementadas
+##  Funcionalidades Implementadas
 
-### ✅ Requisitos del sistema
+###  Requisitos del sistema
 
 | # | Requisito | Implementación |
 |---|-----------|----------------|
@@ -147,7 +147,7 @@ kubectl scale deployment ds-api --replicas=3 -n denymstyle
 | 12 | Móvil | Diseño 100% responsive, CSS media queries |
 | 13 | Agente inteligente | Demy — asistente IA con Claude (Anthropic API) |
 
-### 📱 Páginas
+###  Páginas
 
 - **Principal** — Hero, ticker, features, catálogo, banner, testimonios, Instagram, newsletter
 - **Ventas** — Menú categorías, colecciones pills, búsqueda, filtros, grid de productos
@@ -162,19 +162,19 @@ kubectl scale deployment ds-api --replicas=3 -n denymstyle
 
 ---
 
-## 👤 Usuario Admin por defecto
+##  Usuario Admin por defecto
 
 ```
 Email:    mjkazama01@gmail.com
 Password: Admin@2026!
 ```
 
-> ⚠️ Genera el hash real con: `node -e "const b=require('bcryptjs'); console.log(b.hashSync('Admin@2026!',12))"`  
+>  Genera el hash real con: `node -e "const b=require('bcryptjs'); console.log(b.hashSync('Admin@2026!',12))"`  
 > Luego actualiza en la BD: `UPDATE usuarios SET password_hash='...' WHERE username='marcelo_admin';`
 
 ---
 
-## 🔗 Redes de contacto
+##  Redes de contacto
 
 | Red | Handle |
 |-----|--------|
