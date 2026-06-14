@@ -70,6 +70,7 @@ async function initDatabase() {
   sql = sql
     .replace(/CREATE\s+DATABASE\s+[^;]+;/gi, '')
     .replace(/USE\s+`?denymstyle`?\s*;/gi, `USE \`${config.database}\`;`)
+    .replace(/\bCREATE TABLE\b/gi, 'CREATE TABLE IF NOT EXISTS')
     .replace(/\bINSERT INTO\b/g, 'INSERT IGNORE INTO')
     .replace(/DEFINER\s*=\s*`[^`]*`@`[^`]*`\s*/gi, '')
     .replace(/CREATE ALGORITHM=\w+\s+SQL SECURITY \w+\s+VIEW/gi, 'CREATE OR REPLACE VIEW');
