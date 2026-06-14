@@ -46,10 +46,10 @@ async function initDatabase() {
   const [[{ db }]] = await connection.query('SELECT DATABASE() AS db');
   console.log(`📍  Database activa: "${db}"`);
 
-  // Buscar SQL solo dentro de backend/ (donde Docker copia el código)
+  // Buscar SQL dentro de backend/
   const sqlCandidates = [
-    path.join(__dirname, '../database/denymstyle.sql'),   // backend/database/
-    path.join(process.cwd(), 'database/denymstyle.sql'),  // /app/database/
+    path.join(__dirname, '../database/denymstyle.sql'),
+    path.join(process.cwd(), 'database/denymstyle.sql'),
   ];
 
   console.log('🔍  Buscando SQL en:');
@@ -71,10 +71,11 @@ async function initDatabase() {
     .replace(/CREATE\s+DATABASE\s+[^;]+;/gi, '')
     .replace(/USE\s+`?denymstyle`?\s*;/gi, `USE \`${config.database}\`;`)
     .replace(/\bCREATE TABLE\b/gi, 'CREATE TABLE IF NOT EXISTS')
-    .replace(/\bINSERT INTO\b/g, 'INSERT IGNORE INTO')
+    .replace(/\bINSERT(?!\s+IGNORE)\s+INTO\b/g, 'INSERT IGNORE INTO')  // ← no duplica IGNORE
     .replace(/DEFINER\s*=\s*`[^`]*`@`[^`]*`\s*/gi, '')
     .replace(/CREATE ALGORITHM=\w+\s+SQL SECURITY \w+\s+VIEW/gi, 'CREATE OR REPLACE VIEW');
 
+  // Forzar USE correcto al inicio
   sql = `USE \`${config.database}\`;\n` + sql;
 
   console.log('⚙️   Ejecutando SQL …');
