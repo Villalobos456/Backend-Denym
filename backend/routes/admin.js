@@ -13,25 +13,31 @@ const GREY  = '#7a6e60';
 // ── GET /api/admin/stats  — Dashboard
 router.get('/stats', verifyToken, requireRole('admin','vendedor'), async (req, res) => {
   try {
-    const [[ventas]]    = await pool.execute("SELECT COUNT(*) AS total_ord, COALESCE(SUM(total),0) AS ingresos FROM ordenes WHERE eliminado=0 AND estado!='cancelado'");
-    const [[productos]] = await pool.execute('SELECT COUNT(*) AS total FROM productos WHERE eliminado=0 AND activo=1');
-    const [[clientes]]  = await pool.execute('SELECT COUNT(*) AS total FROM usuarios WHERE eliminado=0 AND role_id=3');
-    const [[pendientes]]= await pool.execute("SELECT COUNT(*) AS total FROM ordenes WHERE estado='pendiente' AND eliminado=0");
+    // FIX: una sola desestructuración para obtener el array de filas
+    const [ventasRows]     = await pool.execute("SELECT COUNT(*) AS total_ord, COALESCE(SUM(total),0) AS ingresos FROM ordenes WHERE eliminado=0 AND estado!='cancelado'");
+    const [productosRows]  = await pool.execute('SELECT COUNT(*) AS total FROM productos WHERE eliminado=0 AND activo=1');
+    const [clientesRows]   = await pool.execute('SELECT COUNT(*) AS total FROM usuarios WHERE eliminado=0 AND role_id=3');
+    const [pendientesRows] = await pool.execute("SELECT COUNT(*) AS total FROM ordenes WHERE estado='pendiente' AND eliminado=0");
 
-    const [ventasDia]   = await pool.execute('SELECT * FROM v_ventas_resumen LIMIT 30');
-    const [ventasCat]   = await pool.execute(
+    const [ventasDia]  = await pool.execute('SELECT * FROM v_ventas_resumen LIMIT 30');
+    const [ventasCat]  = await pool.execute(
       "SELECT c.nombre AS categoria, COUNT(oi.item_id) AS cantidad, SUM(oi.subtotal) AS ingresos FROM orden_items oi JOIN productos p ON oi.product_id=p.product_id JOIN categorias c ON p.categoria_id=c.categoria_id JOIN ordenes o ON oi.order_id=o.order_id WHERE o.eliminado=0 AND o.estado!='cancelado' GROUP BY p.categoria_id"
     );
-    const [topProds]    = await pool.execute(
+    const [topProds]   = await pool.execute(
       "SELECT p.nombre, SUM(oi.cantidad) AS vendidos, SUM(oi.subtotal) AS ingresos FROM orden_items oi JOIN productos p ON oi.product_id=p.product_id JOIN ordenes o ON oi.order_id=o.order_id WHERE o.eliminado=0 AND o.estado!='cancelado' GROUP BY oi.product_id ORDER BY vendidos DESC LIMIT 5"
     );
-    const [stockBajo]   = await pool.execute('SELECT * FROM v_stock_bajo LIMIT 10');
-    const [ventas7]     = await pool.execute(
+    const [stockBajo]  = await pool.execute('SELECT * FROM v_stock_bajo LIMIT 10');
+    const [ventas7]    = await pool.execute(
       "SELECT DATE(creado_en) AS fecha, COUNT(*) AS c FROM ordenes WHERE eliminado=0 AND creado_en>=DATE_SUB(NOW(),INTERVAL 7 DAY) GROUP BY DATE(creado_en)"
     );
 
     res.json({
-      resumen: { ventas: ventas[0], productos: productos[0], clientes: clientes[0], pendientes: pendientes[0] },
+      resumen: {
+        ventas:     ventasRows[0],
+        productos:  productosRows[0],
+        clientes:   clientesRows[0],
+        pendientes: pendientesRows[0],
+      },
       ventasDia, ventasCat, topProds, stockBajo, ventas7
     });
   } catch (e) { res.status(500).json({ message: e.message }); }
@@ -75,8 +81,9 @@ router.delete('/usuarios/:id', verifyToken, requireRole('admin'), async (req, re
 // ── PDF VENTAS
 router.get('/pdf/ventas', verifyToken, requireRole('admin','vendedor'), async (req, res) => {
   try {
-    const [ordenes]    = await pool.execute("SELECT o.*,u.fullname,u.email,mp.nombre AS metodo,te.nombre AS entrega FROM ordenes o JOIN usuarios u ON o.user_id=u.user_id JOIN metodos_pago mp ON o.metodo_pago_id=mp.metodo_id JOIN tipos_entrega te ON o.entrega_id=te.entrega_id WHERE o.eliminado=0 ORDER BY o.creado_en DESC LIMIT 100");
-    const [[totales]]  = await pool.execute("SELECT COUNT(*) AS total_ord, COALESCE(SUM(total),0) AS ingresos FROM ordenes WHERE eliminado=0 AND estado!='cancelado'");
+    const [ordenes]   = await pool.execute("SELECT o.*,u.fullname,u.email,mp.nombre AS metodo,te.nombre AS entrega FROM ordenes o JOIN usuarios u ON o.user_id=u.user_id JOIN metodos_pago mp ON o.metodo_pago_id=mp.metodo_id JOIN tipos_entrega te ON o.entrega_id=te.entrega_id WHERE o.eliminado=0 ORDER BY o.creado_en DESC LIMIT 100");
+    const [totalesRows] = await pool.execute("SELECT COUNT(*) AS total_ord, COALESCE(SUM(total),0) AS ingresos FROM ordenes WHERE eliminado=0 AND estado!='cancelado'");
+    const totales = totalesRows[0];
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="ventas_${Date.now()}.pdf"`);
@@ -168,13 +175,13 @@ router.get('/pdf/inventario', verifyToken, requireRole('admin','vendedor'), asyn
 });
 
 // ── CRUD Colecciones
-router.get('/colecciones',     verifyToken, requireRole('admin','vendedor'), async (req,res)=>{ const [r]=await pool.execute('SELECT * FROM colecciones WHERE eliminado=0 ORDER BY coleccion_id DESC'); res.json(r); });
-router.post('/colecciones',    verifyToken, requireRole('admin'), async(req,res)=>{ const {nombre,temporada,descripcion}=req.body; if(!nombre||!temporada) return res.status(400).json({message:'Campos requeridos'}); try{ const [r]=await pool.execute('INSERT INTO colecciones (nombre,temporada,descripcion) VALUES (?,?,?)',[nombre,temporada,descripcion||null]); res.status(201).json({coleccion_id:r.insertId}); }catch(e){res.status(500).json({message:e.message});} });
-router.put('/colecciones/:id', verifyToken, requireRole('admin'), async(req,res)=>{ const {nombre,temporada,descripcion,activo}=req.body; await pool.execute('UPDATE colecciones SET nombre=?,temporada=?,descripcion=?,activo=? WHERE coleccion_id=?',[nombre,temporada,descripcion||null,activo?1:0,req.params.id]); res.json({message:'OK'}); });
+router.get('/colecciones',      verifyToken, requireRole('admin','vendedor'), async (req,res)=>{ const [r]=await pool.execute('SELECT * FROM colecciones WHERE eliminado=0 ORDER BY coleccion_id DESC'); res.json(r); });
+router.post('/colecciones',     verifyToken, requireRole('admin'), async(req,res)=>{ const {nombre,temporada,descripcion}=req.body; if(!nombre||!temporada) return res.status(400).json({message:'Campos requeridos'}); try{ const [r]=await pool.execute('INSERT INTO colecciones (nombre,temporada,descripcion) VALUES (?,?,?)',[nombre,temporada,descripcion||null]); res.status(201).json({coleccion_id:r.insertId}); }catch(e){res.status(500).json({message:e.message});} });
+router.put('/colecciones/:id',  verifyToken, requireRole('admin'), async(req,res)=>{ const {nombre,temporada,descripcion,activo}=req.body; await pool.execute('UPDATE colecciones SET nombre=?,temporada=?,descripcion=?,activo=? WHERE coleccion_id=?',[nombre,temporada,descripcion||null,activo?1:0,req.params.id]); res.json({message:'OK'}); });
 router.delete('/colecciones/:id',verifyToken,requireRole('admin'),async(req,res)=>{ await pool.execute('UPDATE colecciones SET eliminado=1 WHERE coleccion_id=?',[req.params.id]); res.json({message:'Eliminada'}); });
 
 // ── Inventario
-router.get('/inventario', verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const [r]=await pool.execute('SELECT * FROM v_stock_bajo'); res.json(r); });
-router.put('/inventario/:id', verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const {stock}=req.body; await pool.execute('UPDATE inventario SET stock=? WHERE inv_id=?',[stock,req.params.id]); res.json({message:'Stock actualizado'}); });
+router.get('/inventario',    verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const [r]=await pool.execute('SELECT * FROM v_stock_bajo'); res.json(r); });
+router.put('/inventario/:id',verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const {stock}=req.body; await pool.execute('UPDATE inventario SET stock=? WHERE inv_id=?',[stock,req.params.id]); res.json({message:'Stock actualizado'}); });
 
 module.exports = router;
