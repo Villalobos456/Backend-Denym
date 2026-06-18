@@ -181,12 +181,7 @@ router.put('/colecciones/:id',  verifyToken, requireRole('admin'), async(req,res
 router.delete('/colecciones/:id',verifyToken,requireRole('admin'),async(req,res)=>{ await pool.execute('UPDATE colecciones SET eliminado=1 WHERE coleccion_id=?',[req.params.id]); res.json({message:'Eliminada'}); });
 
 // ── Inventario
-router.get('/inventario', verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ 
-  const [r]=await pool.execute(
-    'SELECT i.inv_id, p.nombre AS producto, p.sku, t.nombre AS talla, c.nombre AS color, i.stock, i.stock_minimo, (i.stock_minimo - i.stock) AS faltante FROM inventario i JOIN productos p ON i.product_id=p.product_id JOIN tallas t ON i.talla_id=t.talla_id JOIN colores c ON i.color_id=c.color_id WHERE p.eliminado=0 ORDER BY p.nombre'
-  ); 
-  res.json(r); 
-});
+router.get('/inventario',    verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const [r]=await pool.execute('SELECT * FROM v_stock_bajo'); res.json(r); });
 router.put('/inventario/:id',verifyToken, requireRole('admin','vendedor'), async(req,res)=>{ const {stock}=req.body; await pool.execute('UPDATE inventario SET stock=? WHERE inv_id=?',[stock,req.params.id]); res.json({message:'Stock actualizado'}); });
 
 module.exports = router;
