@@ -422,7 +422,7 @@ export default function Admin() {
             {tab === 'inventario' && (
               <div className="adm-tcard">
                 <div className="adm-thead">
-                  <span className="adm-thead-title">Stock bajo</span>
+                  <span className="adm-thead-title">Inventario completo</span>
                   <button className="adm-btn-ghost" onClick={() => dlPDF('inventario')}><Download size={12}/> PDF</button>
                 </div>
                 <div className="adm-twrap">
