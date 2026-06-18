@@ -453,3 +453,153 @@ VALUES
 SET FOREIGN_KEY_CHECKS = 1;
 SELECT 'DenymStyle BD instalada correctamente' AS resultado,
        NOW() AS fecha_instalacion;
+
+INSERT INTO `usuarios`
+  (`role_id`,`fullname`,`username`,`email`,`password_hash`,`telefono`,`direccion`,`ciudad`,`departamento`,`pais`,`pwd_strength`,`activo`,`verificado`,`ultimo_login`) VALUES
+  (2,'Daniela Quispe Mamani','daniela_vende','daniela.quispe@denymstyle.com','$2b$12$kT9mWqOxPN3.rS8Rl4M6QfDNjyS5.u6GHKvQ2Xo.ErSZCDgzmOkcz','71234567','Av. Arce 2456','La Paz','La Paz','Bolivia','fuerte',1,1,'2026-06-15 09:20:00'),
+  (3,'Carlos Mendoza Flores','carlos_mendoza','carlos.mendoza@gmail.com','$2b$12$lU0nXrPyQO4.tT9Sm5N7RgEOkzT6.v7HILwR3Yp.FsTACEhanPldz','72345678','Calle Murillo 134','La Paz','La Paz','Bolivia','intermedio',1,1,'2026-06-16 18:45:00'),
+  (3,'Valeria Soto Choque','valeria_soto','valeria.soto@hotmail.com','$2b$12$mV1oYsQzRP5.uU0Tn6O8ShFPlAU7.w8JIMxS4Zq.GtUBDFibpQmez','73456789','Zona Sopocachi, calle 21','La Paz','La Paz','Bolivia','fuerte',1,1,'2026-06-17 12:10:00'),
+  (3,'Jorge Luis Apaza','jorge_apaza','jorge.apaza@outlook.com','$2b$12$nW2pZtRzSQ6.vV1Uo7P9TiGQmBV8.x9KNyT5ar.HuVCEGjcqRnfaA','74567890','Villa Fatima, calle 4','La Paz','La Paz','Bolivia','debil',1,0,NULL),
+  (3,'Fernanda Rios Vargas','fernanda_rios','fernanda.rios@gmail.com','$2b$12$oX3qauSaTR7.wW2Vp8Q0UjHRnCW9.y0LOzU6bs.IvWDFHkdrSogbB','75678901','Av. Ballivian 890','La Paz','La Paz','Bolivia','intermedio',1,1,'2026-06-14 21:30:00'),
+  (3,'Mauricio Gutierrez','mauricio_g','mauricio.gutierrez@yahoo.com','$2b$12$pY4rbvTbUS8.xX3Wq9R1VkISoDX0.z1MPaV7ct.JwXEGIlespThcC','76789012','El Alto, Ceja zona 16 de Julio','El Alto','La Paz','Bolivia','debil',1,1,'2026-06-10 08:00:00'),
+  (3,'Camila Torrez Lima','camila_torrez','camila.torrez@gmail.com','$2b$12$qZ5scwUcVT9.yY4Xr0S2WlJTpEY1.a2NQbW8du.KxYFHJmftUidD','77890123','Calacoto, calle 15','La Paz','La Paz','Bolivia','fuerte',1,1,'2026-06-17 16:00:00'),
+  (3,'Ricardo Paz Choque','ricardo_paz','ricardo.paz@gmail.com','$2b$12$rA6tdxVdWU0.zZ5Ys1T3XmKUqFZ2.b3ORcX9ev.LyZGIKnguVjeE','78901234','Achumani, calle 12','La Paz','La Paz','Bolivia','intermedio',1,0,NULL),
+  (3,'Andrea Mamani Quispe','andrea_mamani','andrea.mamani@hotmail.com','$2b$12$sB7uezWeXV1.a06Zt2U4YnLVrGA3.c4PSdY0fw.MzAHJLohwWkfF','79012345','San Miguel, calle 8','La Paz','La Paz','Bolivia','fuerte',1,1,'2026-06-16 10:15:00'),
+  (3,'Esteban Choque Rojas','esteban_choque','esteban.choque@gmail.com','$2b$12$tC8vfaXfYW2.b17au3V5ZoMWsHB4.d5QTeZ1gx.NaBIKMpixXlgG','70123456','Miraflores, calle 22','La Paz','La Paz','Bolivia','debil',0,1,'2026-05-20 14:00:00'),
+  (3,'Lucia Fernandez Apaza','lucia_fernandez','lucia.fernandez@gmail.com','$2b$12$uD9wgbYgZX3.c28bv4W6ApNXtIC5.e6RUfa2hy.ObCJLNqjyYmhH','71112233','Sopocachi, Av. 6 de Agosto','La Paz','La Paz','Bolivia','intermedio',1,1,'2026-06-18 07:40:00');
+
+-- ──────────────────────────────────────────
+-- MÁS PRODUCTOS NUEVOS (product_id continúa desde 9)
+-- ──────────────────────────────────────────
+INSERT INTO `productos`
+  (`categoria_id`,`coleccion_id`,`nombre`,`descripcion_corta`,`descripcion`,`precio`,`precio_oferta`,`sku`,`imagen_url`,`material`,`genero`,`destacado`,`nuevo`,`activo`) VALUES
+  (1,3,'Abrigo Lana Dorado','Abrigo largo con detalles dorados.','Abrigo de lana premium con botonadura dorada. Silueta recta y caida impecable para el invierno paceño con actitud de lujo.',480.00,420.00,'ALD-001','https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600','Lana 80% Poliester 20%','hombre',1,1,1),
+  (2,3,'Vestido Satinado Dorado','Brillo sutil, corte recto.','Vestido en satin con hilos dorados entrelazados. Pieza statement para eventos donde el lujo discreto es protagonista.',390.00,NULL,'VSD-001','https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600','Saten con hilo metalico','mujer',1,0,1),
+  (4,NULL,'Cinturon Cuero Negro','Cuero genuino, hebilla metalica.','Cinturon en cuero genuino curtido artesanalmente. Hebilla metalica con acabado mate, el accesorio que completa cualquier look.',150.00,NULL,'CCN-001','https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=600','Cuero genuino','unisex',0,0,1),
+  (4,NULL,'Gorra Bordada Denym','Bordado frontal, ajuste snapback.','Gorra snapback con bordado de la marca en frente. Ajuste regulable y estilo urbano para cualquier outfit casual.',95.00,80.00,'GBD-001','https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600','Algodon twill','unisex',0,1,1),
+  (1,5,'Pantalon Cargo Slim','Bolsillos funcionales, corte slim.','Pantalon cargo con corte slim moderno. Multiples bolsillos funcionales sin perder la silueta ajustada y el estilo urbano.',260.00,NULL,'PCS-001','https://images.unsplash.com/photo-1542272604-787c3835535d?w=600','Algodon ripstop','hombre',0,1,1),
+  (2,4,'Blusa Seda Manga Larga','Caida fluida, cuello en V.','Blusa en seda sintetica con cuello en V y mangas largas. Elegancia minimalista para la oficina o una salida nocturna.',230.00,NULL,'BSM-001','https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600','Seda sintetica','mujer',0,0,1),
+  (3,6,'Sueter Cuello Alto','Punto grueso, cuello alto comodo.','Sueter de punto grueso con cuello alto. Calidez y estilo en una sola pieza versatil para el clima frio de la ciudad.',220.00,190.00,'SCA-001','https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600','Lana merino mezcla','unisex',1,0,1),
+  (4,NULL,'Lentes de Sol Aviador','Marco metalico, lente polarizado.','Lentes de sol estilo aviador con marco metalico dorado y lente polarizado. Proteccion UV con actitud retro contemporanea.',180.00,NULL,'LSA-001','https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600','Metal y policarbonato','unisex',0,1,1),
+  (1,NULL,'Camiseta Basica Premium','Algodon pima, corte regular.','Camiseta basica en algodon pima de la mas alta calidad. El basico esencial que nunca falta en un guardarropa bien curado.',95.00,NULL,'CBP-001','https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600','Algodon pima 100%','hombre',0,0,1),
+  (2,NULL,'Pantalon Palazzo Crema','Fluido, cintura alta.','Pantalon palazzo de pierna ancha en tono crema. Cintura alta y caida fluida que estiliza la figura con comodidad total.',210.00,NULL,'PPC-001','https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600','Viscosa premium','mujer',0,1,1),
+  (3,5,'Chamarra Bomber Urbana','Estilo bomber, puños elasticos.','Chamarra bomber con puños y cuello elasticos. Inspirada en el streetwear de alta costura para un look urbano con actitud.',340.00,295.00,'CBU-001','https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600','Poliester technical','unisex',1,1,1);
+
+-- ──────────────────────────────────────────
+-- INVENTARIO para productos nuevos (9 al 19) y refuerzo de los originales
+-- ──────────────────────────────────────────
+INSERT INTO `inventario` (`product_id`,`talla_id`,`color_id`,`stock`,`stock_minimo`) VALUES
+(9,8,1,12,3),(9,9,1,16,3),(9,10,1,9,2),
+(10,2,4,10,3),(10,3,4,14,3),(10,4,4,8,2),
+(11,1,1,30,8),
+(12,1,1,40,10),(12,1,2,18,5),
+(13,7,5,20,5),(13,8,5,18,5),(13,9,5,12,3),
+(14,2,3,16,3),(14,3,3,20,5),
+(15,2,5,14,3),(15,3,5,18,5),(15,4,5,10,3),
+(16,1,4,15,3),
+(17,2,1,25,5),(17,3,1,30,5),(17,4,1,22,5),
+(18,2,3,12,3),(18,3,3,16,3),(18,4,3,10,2),
+(19,2,1,8,2),(19,3,1,12,3),(19,4,1,6,2);
+
+-- ──────────────────────────────────────────
+-- MÁS ÓRDENES (variedad de estados) — order_id continúa desde 1
+-- user_id 2..12 son clientes nuevos (2=vendedor, 3..12=clientes); 1=admin
+-- ──────────────────────────────────────────
+INSERT INTO `ordenes`
+  (`user_id`,`metodo_pago_id`,`entrega_id`,`estado`,`subtotal`,`cargo_entrega`,`descuento`,`total`,`moneda`,`nombre_receptor`,`telefono_entrega`,`direccion_entrega`,`ciudad_entrega`,`pago_estado`,`adelanto_pagado`,`ip_compra`,`creado_en`) VALUES
+  (3,2,2,'entregado',560.00,15.00,0.00,575.00,'BOB','Carlos Mendoza Flores','72345678','Calle Murillo 134','La Paz','aprobado',575.00,'190.129.5.21','2026-05-20 10:15:00'),
+  (4,1,1,'entregado',280.00,0.00,28.00,252.00,'BOB','Valeria Soto Choque','73456789','Zona Sopocachi, calle 21','La Paz','aprobado',252.00,'190.129.5.45','2026-05-22 14:30:00'),
+  (5,3,2,'enviado',420.00,15.00,0.00,435.00,'BOB','Jorge Luis Apaza','74567890','Villa Fatima, calle 4','La Paz','aprobado',435.00,'190.129.6.12','2026-06-01 09:00:00'),
+  (6,2,3,'procesando',610.00,35.00,61.00,584.00,'BOB','Fernanda Rios Vargas','75678901','Av. Ballivian 890','La Paz','aprobado',584.00,'190.129.6.88','2026-06-05 16:45:00'),
+  (7,4,2,'pendiente',360.00,15.00,0.00,375.00,'BOB','Mauricio Gutierrez','76789012','El Alto, Ceja zona 16 de Julio','El Alto','verificando',187.50,'190.129.7.30','2026-06-10 11:20:00'),
+  (8,1,1,'pagado',195.00,0.00,0.00,195.00,'BOB','Camila Torrez Lima','77890123','Calacoto, calle 15','La Paz','aprobado',195.00,'190.129.7.55','2026-06-11 08:10:00'),
+  (9,2,2,'enviado',480.00,15.00,72.00,423.00,'BOB','Ricardo Paz Choque','78901234','Achumani, calle 12','La Paz','aprobado',423.00,'190.129.8.02','2026-06-12 13:00:00'),
+  (10,3,3,'entregado',390.00,35.00,0.00,425.00,'BOB','Andrea Mamani Quispe','79012345','San Miguel, calle 8','La Paz','aprobado',425.00,'190.129.8.40','2026-06-13 17:30:00'),
+  (3,1,2,'cancelado',150.00,15.00,0.00,165.00,'BOB','Carlos Mendoza Flores','72345678','Calle Murillo 134','La Paz','rechazado',0.00,'190.129.5.21','2026-06-14 12:00:00'),
+  (4,2,1,'devuelto',95.00,0.00,0.00,95.00,'BOB','Valeria Soto Choque','73456789','Zona Sopocachi, calle 21','La Paz','aprobado',95.00,'190.129.5.45','2026-06-15 10:00:00'),
+  (12,4,2,'pendiente',220.00,15.00,0.00,235.00,'BOB','Lucia Fernandez Apaza','71112233','Sopocachi, Av. 6 de Agosto','La Paz','verificando',117.50,'190.129.9.10','2026-06-16 09:30:00'),
+  (5,1,3,'pagado',340.00,35.00,34.00,341.00,'BOB','Jorge Luis Apaza','74567890','Villa Fatima, calle 4','La Paz','aprobado',341.00,'190.129.6.12','2026-06-17 15:00:00'),
+  (6,3,2,'procesando',180.00,15.00,0.00,195.00,'BOB','Fernanda Rios Vargas','75678901','Av. Ballivian 890','La Paz','aprobado',195.00,'190.129.6.88','2026-06-18 08:45:00');
+
+-- ──────────────────────────────────────────
+-- ITEMS de cada orden nueva (order_id 1..13, según el orden de inserción arriba)
+-- ──────────────────────────────────────────
+INSERT INTO `orden_items` (`order_id`,`product_id`,`talla_id`,`color_id`,`nombre_snapshot`,`imagen_url`,`precio_unit`,`cantidad`,`subtotal`) VALUES
+(1,1,3,1,'Chaqueta Denim Oversize','https://images.unsplash.com/photo-1520975916090-3105956dac38?w=600',320.00,1,320.00),
+(1,9,9,1,'Abrigo Lana Dorado','https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600',240.00,1,240.00),
+(2,2,3,3,'Vestido Corte Elegante','https://images.unsplash.com/photo-1495121605193-b116b5b09a6e?w=600',280.00,1,280.00),
+(3,5,8,1,'Blazer Estructurado','https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600',420.00,1,420.00),
+(4,8,3,3,'Conjunto Loungewear','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',360.00,1,360.00),
+(4,12,1,1,'Cinturon Cuero Negro','https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=600',150.00,1,150.00),
+(4,13,1,1,'Gorra Bordada Denym','https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600',100.00,1,100.00),
+(5,8,2,3,'Conjunto Loungewear','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',360.00,1,360.00),
+(6,7,3,1,'Camisa Lino Slim','https://images.unsplash.com/photo-1603251578711-3290ca1a0187?w=600',195.00,1,195.00),
+(7,9,8,1,'Abrigo Lana Dorado','https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600',420.00,1,420.00),
+(7,16,1,4,'Lentes de Sol Aviador','https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600',60.00,1,60.00),
+(8,10,3,4,'Vestido Satinado Dorado','https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600',390.00,1,390.00),
+(9,7,4,1,'Camisa Lino Slim','https://images.unsplash.com/photo-1603251578711-3290ca1a0187?w=600',150.00,1,150.00),
+(10,17,2,3,'Camiseta Basica Premium','https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600',95.00,1,95.00),
+(11,15,2,5,'Sueter Cuello Alto','https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600',220.00,1,220.00),
+(12,19,3,1,'Chamarra Bomber Urbana','https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600',340.00,1,340.00),
+(13,11,1,1,'Pantalon Cargo Slim','https://images.unsplash.com/photo-1542272604-787c3835535d?w=600',180.00,1,180.00);
+
+-- ──────────────────────────────────────────
+-- CARRITO + CARRITO_ITEMS (sólo clientes con compras pendientes/abandonadas)
+-- ──────────────────────────────────────────
+INSERT INTO `carrito` (`user_id`) VALUES
+  (6),(7),(11),(12);
+
+INSERT INTO `carrito_items` (`cart_id`,`product_id`,`talla_id`,`color_id`,`cantidad`) VALUES
+  (1,14,2,3,1),
+  (1,16,1,4,2),
+  (2,9,9,1,1),
+  (3,2,3,3,1),
+  (3,18,3,3,2),
+  (4,19,3,1,1);
+
+-- ──────────────────────────────────────────
+-- ACTUALIZAR usos de cupones (reflejar canjes en órdenes con descuento)
+-- ──────────────────────────────────────────
+UPDATE `cupones` SET `usos_actuales` = 1 WHERE `codigo` = 'DENYM10';
+UPDATE `cupones` SET `usos_actuales` = 1 WHERE `codigo` = 'BIENVENIDO';
+UPDATE `cupones` SET `usos_actuales` = 1 WHERE `codigo` = 'VIP2026';
+
+-- ──────────────────────────────────────────
+-- LOG DE ACCESO (ingresos, salidas, intentos fallidos, registros)
+-- ──────────────────────────────────────────
+INSERT INTO `log_acceso` (`user_id`,`username`,`ip_address`,`evento`,`browser`,`sistema_op`,`fecha_hora`) VALUES
+  (1,'marcelo_admin','190.129.1.10','ingreso','Chrome 125 / Windows','Windows 11','2026-06-18 07:00:00'),
+  (2,'daniela_vende','190.129.2.20','ingreso','Firefox 126 / Android','Android 14','2026-06-15 09:18:00'),
+  (3,'carlos_mendoza','190.129.5.21','ingreso','Chrome 124 / Android','Android 13','2026-06-16 18:43:00'),
+  (3,'carlos_mendoza','190.129.5.21','salida','Chrome 124 / Android','Android 13','2026-06-16 19:10:00'),
+  (4,'valeria_soto','190.129.5.45','registro','Safari 17 / iOS','iOS 17','2026-05-19 20:00:00'),
+  (4,'valeria_soto','190.129.5.45','ingreso','Safari 17 / iOS','iOS 17','2026-06-17 12:08:00'),
+  (NULL,'jorge_apaza','190.129.6.12','intento_fallido','Chrome 125 / Windows','Windows 10','2026-06-14 22:00:00'),
+  (5,'jorge_apaza','190.129.6.12','ingreso','Chrome 125 / Windows','Windows 10','2026-06-14 22:01:30'),
+  (6,'fernanda_rios','190.129.6.88','ingreso','Edge 124 / Windows','Windows 11','2026-06-14 21:28:00'),
+  (7,'mauricio_g','190.129.7.30','registro','Chrome 123 / Android','Android 12','2026-06-09 18:00:00'),
+  (7,'mauricio_g','190.129.7.30','ingreso','Chrome 123 / Android','Android 12','2026-06-10 07:58:00'),
+  (NULL,'ricardo_paz','190.129.8.02','intento_fallido','Firefox 125 / Linux','Ubuntu 24.04','2026-06-11 23:50:00'),
+  (8,'ricardo_paz','190.129.8.02','ingreso','Firefox 125 / Linux','Ubuntu 24.04','2026-06-11 23:52:00'),
+  (9,'andrea_mamani','190.129.8.40','ingreso','Safari 17 / macOS','macOS 14','2026-06-15 23:50:00'),
+  (12,'lucia_fernandez','190.129.9.10','registro','Chrome 125 / Windows','Windows 11','2026-06-18 07:38:00'),
+  (12,'lucia_fernandez','190.129.9.10','ingreso','Chrome 125 / Windows','Windows 11','2026-06-18 07:39:30');
+
+-- ──────────────────────────────────────────
+-- NEWSLETTER
+-- ──────────────────────────────────────────
+INSERT INTO `newsletter` (`email`,`activo`) VALUES
+  ('carlos.mendoza@gmail.com',1),
+  ('valeria.soto@hotmail.com',1),
+  ('fernanda.rios@gmail.com',1),
+  ('camila.torrez@gmail.com',1),
+  ('andrea.mamani@hotmail.com',1),
+  ('lucia.fernandez@gmail.com',1),
+  ('promos.fan88@gmail.com',1),
+  ('ya.no.quiero.spam@gmail.com',0),
+  ('seguidor.moda@outlook.com',1),
+  ('cliente.frecuente@gmail.com',1);
+
+SET FOREIGN_KEY_CHECKS = 1;
+SELECT 'Datos adicionales DenymStyle insertados correctamente' AS resultado,
+       NOW() AS fecha_insercion;
